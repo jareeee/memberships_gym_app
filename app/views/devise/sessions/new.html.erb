@@ -1,7 +1,6 @@
-<%= stylesheet_link_tag 'sessions', media: 'all' %>
-<div class="relative ">
+<div class="relative flex items-center justify-center">
   <div class="fixed top-0 right-0 left-0 inset-0 bg-cover bg-center h-[320px] z-[-1000]" style="background-image: url('<%= asset_path('background-login.png') %>');"></div>
-  <div class="flex flex-col items-center mt-[35px]">
+  <div class="flex flex-col items-center mt-[35px] justify-center">
     <%= image_tag "logo-gym-app.svg", alt: "LesGoGYM Logo", class: "w-[167px] h-[250px]" %>
     <h1 class="text-white mt-[55px] font-bold text-[22px]">
       Welcome
@@ -11,16 +10,22 @@
 
       <%= f.password_field :password, autocomplete: "current-password", placeholder: "Password", class:"w-[100%] h-[56px] rounded-2xl text-start bg-[#21334A] p-4 mt-[24px]"%>
 
+      <% if alert.present? %>
+        <div class="text-red-500 mt-2">
+          <%= alert %>
+        </div>
+      <% end %>
       <%= f.button "Login", class: "flex h-[48px] w-[100%] rounded-xl p[0px 20px] bg-[#388CFA] mt-[24px] justify-center items-center" %>
+    <% end %>
+
+    <%= button_to user_google_oauth2_omniauth_authorize_path, data: { turbo: 'false' }, class: "flex w-[100%] h-[48px] p-[0px 20px] rounded-xl bg-[#21334A] items-center justify-center mt-[24px] gap-2", form_class: "w-full" do %>
+      <%= image_tag "google-icon.png", alt: "Google Icon", class: "w-5 h-5" %>
+      <span>Sign in with Google</span>
     <% end %>
 
     <div class="flex flex-row mt-[16px] gap-1">
       <p class="text-[#8FA8CC]">Don't have an account?</p>
       <%= link_to "Sign up", new_user_registration_path %>
     </div>
-
-    <% if alert.present? %>
-      <%= alert %>
-    <% end %>
   </div>
 </div>
