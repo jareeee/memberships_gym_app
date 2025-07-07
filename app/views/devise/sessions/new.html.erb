@@ -1,0 +1,26 @@
+<%= stylesheet_link_tag 'sessions', media: 'all' %>
+<div class="relative ">
+  <div class="fixed top-0 right-0 left-0 inset-0 bg-cover bg-center h-[320px] z-[-1000]" style="background-image: url('<%= asset_path('background-login.png') %>');"></div>
+  <div class="flex flex-col items-center mt-[35px]">
+    <%= image_tag "logo-gym-app.svg", alt: "LesGoGYM Logo", class: "w-[167px] h-[250px]" %>
+    <h1 class="text-white mt-[55px] font-bold text-[22px]">
+      Welcome
+    </h1>
+    <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "Email", class: "w-[100%] h-[56px] rounded-2xl text-start bg-[#21334A] p-4 mt-[24px]"%>
+
+      <%= f.password_field :password, autocomplete: "current-password", placeholder: "Password", class:"w-[100%] h-[56px] rounded-2xl text-start bg-[#21334A] p-4 mt-[24px]"%>
+
+      <%= f.button "Login", class: "flex h-[48px] w-[100%] rounded-xl p[0px 20px] bg-[#388CFA] mt-[24px] justify-center items-center" %>
+    <% end %>
+
+    <div class="flex flex-row mt-[16px] gap-1">
+      <p class="text-[#8FA8CC]">Don't have an account?</p>
+      <%= link_to "Sign up", new_user_registration_path %>
+    </div>
+
+    <% if alert.present? %>
+      <%= alert %>
+    <% end %>
+  </div>
+</div>
