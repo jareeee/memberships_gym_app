@@ -14,13 +14,31 @@
   </div>
 
   <!-- Membership Card -->
-  <% membership = { status: 'inactive' } %>
   <div class="flex content-end relative h-[222px] rounded-md overflow-hidden mt-[24px] bg-[url('bg-dashboard.png')] bg-cover bg-center">
-    <div class="text-white text-2xl font-bold mb-2 p-4 self-end">
-      Membership Status: <%= membership[:status] %>
+    <div class="mb-2 p-4 self-end">
+      <div class="text-white text-2xl font-bold">Membership Status: <%= @membership.present? ? 'active' : 'inactive' %></div>
+      <% if @membership.present? %>
+        <div class="text-white text-base font-medium leading-[24px]">Expires on: <%= @membership.end_date.strftime("%B %d, %Y") %></div>
+      <% end %>
     </div>
     <div class="absolute right-0">
       <%= image_tag "logo-gym-app.svg", alt: "LesGoGYM Logo", class: "w-[92px] h-[138px] rounded-full p-2" %>
     </div>
+  </div>
+
+  <!-- Action Button -->
+  <div class="mt-4">
+    <% if @membership.present? %>
+      <button class="bg-[#4282EB] text-white h-[48px] rounded-lg font-bold hover:bg-blue-600 transition-colors flex items-center space-x-2 w-full justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M6.75 0.75H2.25C1.42157 0.75 0.75 1.42157 0.75 2.25V6.75C0.75 7.57843 1.42157 8.25 2.25 8.25H6.75C7.57843 8.25 8.25 7.57843 8.25 6.75V2.25C8.25 1.42157 7.57843 0.75 6.75 0.75ZM6.75 6.75H2.25V2.25H6.75V6.75ZM6.75 9.75H2.25C1.42157 9.75 0.75 10.4216 0.75 11.25V15.75C0.75 16.5784 1.42157 17.25 2.25 17.25H6.75C7.57843 17.25 8.25 16.5784 8.25 15.75V11.25C8.25 10.4216 7.57843 9.75 6.75 9.75ZM6.75 15.75H2.25V11.25H6.75V15.75ZM15.75 0.75H11.25C10.4216 0.75 9.75 1.42157 9.75 2.25V6.75C9.75 7.57843 10.4216 8.25 11.25 8.25H15.75C16.5784 8.25 17.25 7.57843 17.25 6.75V2.25C17.25 1.42157 16.5784 0.75 15.75 0.75ZM15.75 6.75H11.25V2.25H15.75V6.75ZM9.75 13.5V10.5C9.75 10.0858 10.0858 9.75 10.5 9.75C10.9142 9.75 11.25 10.0858 11.25 10.5V13.5C11.25 13.9142 10.9142 14.25 10.5 14.25C10.0858 14.25 9.75 13.9142 9.75 13.5ZM17.25 12C17.25 12.4142 16.9142 12.75 16.5 12.75H14.25V16.5C14.25 16.9142 13.9142 17.25 13.5 17.25H10.5C10.0858 17.25 9.75 16.9142 9.75 16.5C9.75 16.0858 10.0858 15.75 10.5 15.75H12.75V10.5C12.75 10.0858 13.0858 9.75 13.5 9.75C13.9142 9.75 14.25 10.0858 14.25 10.5V11.25H16.5C16.9142 11.25 17.25 11.5858 17.25 12ZM17.25 15V16.5C17.25 16.9142 16.9142 17.25 16.5 17.25C16.0858 17.25 15.75 16.9142 15.75 16.5V15C15.75 14.5858 16.0858 14.25 16.5 14.25C16.9142 14.25 17.25 14.5858 17.25 15Z" fill="white"/>
+        </svg>
+        <span>SCAN TO CHECK-IN</span>
+      </button>
+    <% else %>
+      <button class="bg-[#DBE5F2] text-[#141A1F] h-[40px] rounded-3xl font-bold text-ellipsis hover:bg-gray-100 transition-colors w-full">
+        Renew Membership
+      </button>
+    <% end %>
   </div>
 </div>
