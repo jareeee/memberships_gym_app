@@ -36,9 +36,7 @@
         <span>SCAN TO CHECK-IN</span>
       </button>
     <% else %>
-      <button class="bg-[#DBE5F2] text-[#141A1F] h-[40px] rounded-3xl font-bold text-ellipsis hover:bg-gray-100 transition-colors w-full">
-        Renew Membership
-      </button>
+        <%= link_to "Renew Membership", memberships_path, class: "bg-[#DBE5F2] text-[#141A1F] h-[48px] rounded-xl font-bold hover:bg-gray-100 transition-colors w-full flex items-center justify-center" %>
     <% end %>
   </div>
 </div>

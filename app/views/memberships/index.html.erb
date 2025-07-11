@@ -1,0 +1,136 @@
+<div class="min-h-screen text-white py-6">
+  <!-- Header -->
+  <div class="flex items-center mb-8">
+    <%= link_to root_path, class: "text-white text-2xl mr-4" do %>
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="16" viewBox="0 0 18 16" fill="none">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M18 8C18 8.41421 17.6642 8.75 17.25 8.75H2.56031L8.03063 14.2194C8.32368 14.5124 8.32368 14.9876 8.03063 15.2806C7.73757 15.5737 7.26243 15.5737 6.96937 15.2806L0.219375 8.53063C0.0785422 8.38995 -0.000590086 8.19906 -0.000590086 8C-0.000590086 7.80094 0.0785422 7.61005 0.219375 7.46937L6.96937 0.719375C7.26243 0.426319 7.73757 0.426319 8.03063 0.719375C8.32368 1.01243 8.32368 1.48757 8.03063 1.78062L2.56031 7.25H17.25C17.6642 7.25 18 7.58579 18 8Z" fill="white"/>
+      </svg>
+    <% end %>
+    <h1 class="text-[18px] font-bold flex-1 text-center">Membership</h1>
+  </div>
+
+  <!-- Membership Duration -->
+  <div class="mb-8">
+    <h2 class="text-[22px] font-bold mb-6">Membership Duration</h2>
+    <%= form_with url: memberships_payment_path, method: :post, local: true, id: "membership_form" do |form| %>
+      <%= form.hidden_field :duration, id: "selected_duration" %>
+      <%= form.hidden_field :payment_method, value: "QRIS" %>
+      
+      <div class="grid grid-cols-3 gap-3 mb-4">
+        <% @times.each do |time| %>
+          <button type="button" class="duration-btn text-white h-[44px] px-4 border border-[#3D4A5C] rounded-xl text-[14px] font-medium hover:bg-[#2A3F56] transition-colors" data-duration="<%= time %>">
+            <%= time %> Month
+          </button>
+        <% end %>
+      </div>
+      <div class="flex justify-start">
+        <button type="button" class="duration-btn text-white h-[44px] px-4 border border-[#3D4A5C] rounded-xl text-[14px] font-medium hover:bg-[#2A3F56] transition-colors" data-duration="12">
+          12 Month
+        </button>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Payment Method -->
+  <div class="mb-8">
+    <h2 class="text-[22px] font-bold mb-6">Payment Method</h2>
+    <div class="border border-[#3D4A5C] rounded-xl p-4 flex items-center justify-between">
+      <span class="text-[14px] font-medium">QRIS</span>
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="21" viewBox="0 0 20 21" fill="none">
+        <g clip-path="url(#clip0_16_1204)">
+          <path d="M6.25 10.5C6.25 12.5711 7.92893 14.25 10 14.25C12.0711 14.25 13.75 12.5711 13.75 10.5C13.75 8.42893 12.0711 6.75 10 6.75C7.92893 6.75 6.25 8.42893 6.25 10.5Z" fill="#DBE6F2"/>
+        </g>
+        <rect x="1" y="1.5" width="18" height="18" rx="9" stroke="#DBE6F2" stroke-width="2"/>
+        <defs>
+          <clipPath id="clip0_16_1204">
+            <rect y="0.5" width="20" height="20" rx="10" fill="white"/>
+          </clipPath>
+        </defs>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Payment Summary -->
+  <div class="mb-8">
+    <h2 class="text-[22px] font-bold mb-6">Payment Summary</h2>
+    <div class="space-y-4">
+      <div class="flex justify-between items-center">
+        <span class="text-[14px] text-gray-300">Membership</span>
+        <span class="text-[14px] font-medium" id="membership_price">Rp. 0</span>
+      </div>
+      <div class="flex justify-between items-center">
+        <span class="text-[14px] text-gray-300">Taxes</span>
+        <span class="text-[14px] font-medium" id="taxes_price">Rp. 1.000</span>
+      </div>
+      <div class="h-px bg-gray-600 my-4"></div>
+      <div class="flex justify-between items-center">
+        <span class="text-[14px] font-bold">Total</span>
+        <span class="text-[14px] font-bold" id="total_price">Rp. 1.000</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pay Now Button -->
+  <button type="submit" form="membership_form" class="bg-white text-black w-full py-4 rounded-xl text-[16px] font-bold hover:bg-gray-100 transition-colors opacity-50" disabled id="pay_now_btn">
+    Pay Now
+  </button>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const durationBtns = document.querySelectorAll('.duration-btn');
+  const selectedDurationInput = document.getElementById('selected_duration');
+  const payNowBtn = document.getElementById('pay_now_btn');
+  const membershipPriceEl = document.getElementById('membership_price');
+  const taxesPriceEl = document.getElementById('taxes_price');
+  const totalPriceEl = document.getElementById('total_price');
+  
+  // Price mapping based on duration
+  const priceMap = {
+    '1': 100000,
+    '3': 300000,
+    '6': 600000,
+    '12': 1000000
+  };
+  
+  const taxes = 1000;
+  
+  function formatPrice(price) {
+    return 'Rp. ' + price.toLocaleString('id-ID');
+  }
+  
+  function updatePaymentSummary(duration) {
+    const membershipPrice = priceMap[duration] || 0;
+    const total = membershipPrice + taxes;
+    
+    membershipPriceEl.textContent = formatPrice(membershipPrice);
+    taxesPriceEl.textContent = formatPrice(taxes);
+    totalPriceEl.textContent = formatPrice(total);
+  }
+  
+  durationBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      // Remove active class from all buttons
+      durationBtns.forEach(b => {
+        b.classList.remove('bg-[#4282EB]', 'border-[#4282EB]');
+        b.classList.add('border-[#3D4A5C]');
+      });
+      
+      // Add active class to clicked button
+      this.classList.remove('border-[#3D4A5C]');
+      this.classList.add('bg-[#4282EB]', 'border-[#4282EB]');
+      
+      // Set selected duration
+      const duration = this.dataset.duration;
+      selectedDurationInput.value = duration;
+      
+      // Update payment summary
+      updatePaymentSummary(duration);
+      
+      // Enable Pay Now button
+      payNowBtn.disabled = false;
+      payNowBtn.classList.remove('opacity-50');
+    });
+  });
+});
+</script>
