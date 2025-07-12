@@ -1,0 +1,48 @@
+<div class="min-h-screen bg-[#12211C] text-white py-6">
+  <!-- Header -->
+  <div class="flex items-center mb-8">
+    <%= link_to root_path, class: "text-2xl mr-[24px]" do %>
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M15.2806 14.2194C15.5737 14.5124 15.5737 14.9876 15.2806 15.2806C14.9876 15.5737 14.5124 15.5737 14.2194 15.2806L8 9.06031L1.78062 15.2806C1.48757 15.5737 1.01243 15.5737 0.719375 15.2806C0.426319 14.9876 0.426319 14.5124 0.719375 14.2194L6.93969 8L0.719375 1.78062C0.426319 1.48757 0.426319 1.01243 0.719375 0.719375C1.01243 0.426319 1.48757 0.426319 1.78062 0.719375L8 6.93969L14.2194 0.719375C14.5124 0.426319 14.9876 0.426319 15.2806 0.719375C15.5737 1.01243 15.5737 1.48757 15.2806 1.78062L9.06031 8L15.2806 14.2194Z" fill="white"/>
+      </svg>
+    <% end %>
+    <h1 class="text-xl font-bold text-center">Payment Successful</h1>
+  </div>
+
+  <!-- Content -->
+  <div class="text-center mb-8">
+    <p class="text-[#91C7B5] leading-[21px] text-sm mb-[32px]">Payment Successful</p>
+    
+    <h2 class="text-[28px] leading-[35px] font-bold mb-8">
+      Your membership is now<br>
+      active until <%= (@expiry_date || Date.parse('2025-12-31')).strftime('%b %d, %Y') %>
+    </h2>
+  </div>
+
+  <!-- Membership Card -->
+  <div class="rounded-xl p-0 mb-8 relative overflow-hidden">
+    <!-- Background Image -->
+    <div class="h-32 bg-[url('bg-paid.png')] bg-cover bg-center"></div>
+    
+    <!-- Card Content -->
+    <div class="bg-[#121721] p-6 relative">
+      <!-- Logo -->
+      <div class=" absolute top-4 right-4">
+        <%= image_tag "logo-gym-app.svg", alt: "LesGoGYM Logo", class: "w-12 h-12 bg-white rounded-full p-2" %>
+      </div>
+      
+      <div>
+        <h3 class="text-2xl font-bold mb-2">Plan: <%= @duration || params[:duration] || '1' %> Month</h3>
+        <p class="text-base">
+          Total Paid: Rp <%= number_with_delimiter(@total || params[:total] || 101000, delimiter: '.') %>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Back Button -->
+  <div class="mt-8">
+    <%= link_to "Back to Dashboard", root_path, 
+        class: "bg-[#24E89E] text-[#12211C] w-full py-4 rounded-3xl text-[16px] font-bold text-center block hover:bg-[#1FCC78] transition-colors" %>
+  </div>
+</div>

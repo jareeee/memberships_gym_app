@@ -14,7 +14,7 @@ class MembershipsController < ApplicationController
   def payment
     duration = params[:duration]
     payment_method = params[:payment_method]
-    
+
     # Process payment logic here
     redirect_to memberships_payment_path, notice: "Payment processed for #{duration} month membership"
   end
@@ -24,15 +24,13 @@ class MembershipsController < ApplicationController
   def calculate_price(duration)
     case duration.to_i
     when 1
-      100000
+      100_000
     when 3
-      250000
+      250_000
     when 6
-      450000
+      450_000
     when 12
-      800000
-    else
-      100000
+      800_000
     end
   end
 end

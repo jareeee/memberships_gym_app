@@ -11,7 +11,7 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="bg-[rgb(15,23,36)] text-white">
+  <body class="<%= controller_name == 'memberships' && action_name == 'paid' ? 'bg-[#12211C]' : 'bg-[rgb(15,23,36)]' %> text-white">
     <main class="container mx-auto px-5 flex justify-center items-center min-h-screen">
       <%= yield %>
     </main>
