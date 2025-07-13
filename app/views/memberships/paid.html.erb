@@ -15,7 +15,7 @@
     
     <h2 class="text-[28px] leading-[35px] font-bold mb-8">
       Your membership is now<br>
-      active until <%= (@expiry_date || Date.parse('2025-12-31')).strftime('%b %d, %Y') %>
+      active until <%= (@expiry_date)%>
     </h2>
   </div>
 
@@ -32,9 +32,9 @@
       </div>
       
       <div>
-        <h3 class="text-2xl font-bold mb-2">Plan: <%= @duration || params[:duration] || '1' %> Month</h3>
+        <h3 class="text-2xl font-bold mb-2">Plan: <%= @duration %></h3>
         <p class="text-base">
-          Total Paid: Rp <%= number_with_delimiter(@total || params[:total] || 101000, delimiter: '.') %>
+          Total Paid: Rp <%= number_with_delimiter(@total_payment, delimiter: '.') %>
         </p>
       </div>
     </div>

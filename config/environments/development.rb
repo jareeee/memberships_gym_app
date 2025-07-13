@@ -76,4 +76,7 @@ Rails.application.configure do
 
   # Configure mailer
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+
+  # Configure host
+  config.hosts << '.ngrok-free.app'
 end

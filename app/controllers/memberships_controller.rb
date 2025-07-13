@@ -14,14 +14,22 @@ class MembershipsController < ApplicationController
   end
 
   def payment
-    price = params[:price_id]
-    session = service.create_session(price)
+    session = service.create_session(params)
 
     redirect_to session.url, allow_other_host: true
   end
 
   def service
     @service = ::MembershipsService.new(current_user)
+  end
+
+  def paid
+    membership = current_user.memberships.active.first
+    return unless membership
+
+    @expiry_date = membership.end_date
+    @total_payment = current_user.payments.last.amount
+    @duration = current_user.payments.last.membership_duration
   end
 
   private

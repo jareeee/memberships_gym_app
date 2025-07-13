@@ -7,6 +7,8 @@ class User < ApplicationRecord
 
   has_many :memberships, dependent: :destroy
 
+  has_many :payments, dependent: :destroy
+
   def self.from_omniauth(access_token)
     data = access_token.info
     user = User.where(email: data['email']).first

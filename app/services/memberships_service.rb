@@ -6,12 +6,12 @@ class MembershipsService
     @url = Rails.application.routes.url_helpers
   end
 
-  def create_session(price_id)
+  def create_session(params)
     Stripe::Checkout::Session.create(
       payment_method_types: ['card'],
       line_items: [
         {
-          price: price_id,
+          price: params[:price_id],
           quantity: 1
         },
         {
@@ -26,7 +26,11 @@ class MembershipsService
       mode: 'subscription',
       success_url: "#{@url.memberships_paid_url}?session_id={CHECKOUT_SESSION_ID}",
       cancel_url: @url.root_url,
-      customer_email: @user.email
+      customer_email: @user.email,
+      metadata: {
+        user_id: @user.id,
+        membership_duration: params[:duration]
+      }
     )
   end
 end

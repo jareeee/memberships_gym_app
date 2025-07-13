@@ -8,4 +8,6 @@ Rails.application.routes.draw do
   get 'memberships/payment', to: 'memberships#show_payment'
   get 'memberships/paid', to: 'memberships#paid'
   post 'memberships/payment', to: 'memberships#payment'
+
+  post '/stripe/webhooks', to: 'stripe_webhooks#create'
 end
