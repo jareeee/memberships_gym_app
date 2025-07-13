@@ -10,4 +10,7 @@ Rails.application.routes.draw do
   post 'memberships/payment', to: 'memberships#payment'
 
   post '/stripe/webhooks', to: 'stripe_webhooks#create'
+
+  get '/check-in', to: 'check_ins#new', as: :new_check_in
+  post '/check-in', to: 'check_ins#create'
 end
