@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 class MembershipsController < ApplicationController
   def index
-    @times = [1, 3, 6]
+    @times = [1, 3, 6, 12]
   end
 
   def show_payment
@@ -12,11 +14,14 @@ class MembershipsController < ApplicationController
   end
 
   def payment
-    duration = params[:duration]
-    payment_method = params[:payment_method]
+    price = params[:price_id]
+    session = service.create_session(price)
 
-    # Process payment logic here
-    redirect_to memberships_payment_path, notice: "Payment processed for #{duration} month membership"
+    redirect_to session.url, allow_other_host: true
+  end
+
+  def service
+    @service = ::MembershipsService.new(current_user)
   end
 
   private
