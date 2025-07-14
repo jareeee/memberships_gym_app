@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  gym_location: one
+  check_in_timestamp: 2025-07-14 23:00:24
+
+two:
+  user: two
+  gym_location: two
+  check_in_timestamp: 2025-07-14 23:00:24

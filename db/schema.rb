@@ -10,9 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_14_062633) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_14_160024) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "check_ins", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "gym_location_id", null: false
+    t.datetime "check_in_timestamp"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["gym_location_id"], name: "index_check_ins_on_gym_location_id"
+    t.index ["user_id"], name: "index_check_ins_on_user_id"
+  end
 
   create_table "gym_locations", force: :cascade do |t|
     t.string "qr_code_identifier"
@@ -58,6 +68,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_14_062633) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "check_ins", "gym_locations"
+  add_foreign_key "check_ins", "users"
   add_foreign_key "memberships", "users"
   add_foreign_key "payments", "users"
 end
