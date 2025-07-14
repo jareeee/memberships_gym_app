@@ -39,4 +39,35 @@
         <%= link_to "Renew Membership", memberships_path, class: "bg-[#DBE5F2] text-[#141A1F] h-[48px] rounded-xl font-bold hover:bg-gray-100 transition-colors w-full flex items-center justify-center" %>
     <% end %>
   </div>
+
+  <!-- Recent Check-ins Section -->
+  <% if @membership.present? && @recent_check_ins.any? %>
+    <div class="mt-8">
+      <h3 class="text-[22px] font-bold mb-4">Recent Check-ins</h3>
+      <div class="space-y-3">
+        <% @recent_check_ins.each do |check_in| %>
+          <div class="rounded-lg border-[1px] border-gray-700 p-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-white font-medium">
+                  <%= check_in.gym_location&.branch %>
+                </p>
+                <p class="text-gray-300 text-sm">
+                  <%= check_in.gym_location&.address%>
+                </p>
+              </div>
+              <div class="text-right">
+                <p class="text-white font-medium">
+                  <%= check_in.check_in_timestamp.strftime("%b %d, %Y") %>
+                </p>
+                <p class="text-gray-300 text-sm">
+                  <%= check_in.check_in_timestamp.strftime("%I:%M %p") %>
+                </p>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
 </div>
