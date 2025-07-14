@@ -12,5 +12,5 @@ Rails.application.routes.draw do
   post '/stripe/webhooks', to: 'stripe_webhooks#create'
 
   get '/check-in', to: 'check_ins#new', as: :new_check_in
-  post '/check-in', to: 'check_ins#create'
+  post '/check-in', to: 'check_ins#create', as: :check_in
 end
