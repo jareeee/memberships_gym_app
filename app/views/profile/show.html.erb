@@ -1,18 +1,18 @@
-<div class="min-h-screen text-white px-4 py-6">
+<div class="min-h-screen text-white w-[390px] relative">
   <!-- Header -->
-  <div class="flex items-center mb-8">
-    <%= link_to root_path, class: "text-white text-2xl mr-4" do %>
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="16" viewBox="0 0 18 16" fill="none">
+  <div class="flex items-center relative justify-between mb-8 mt-7">
+    <%= link_to root_path, class:"absolute" do %>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 18 16" fill="none">
         <path fill-rule="evenodd" clip-rule="evenodd" d="M18 8C18 8.41421 17.6642 8.75 17.25 8.75H2.56031L8.03063 14.2194C8.32368 14.5124 8.32368 14.9876 8.03063 15.2806C7.73757 15.5737 7.26243 15.5737 6.96937 15.2806L0.219375 8.53063C0.0785422 8.38995 -0.000590086 8.19906 -0.000590086 8C-0.000590086 7.80094 0.0785422 7.61005 0.219375 7.46937L6.96937 0.719375C7.26243 0.426319 7.73757 0.426319 8.03063 0.719375C8.32368 1.01243 8.32368 1.48757 8.03063 1.78062L2.56031 7.25H17.25C17.6642 7.25 18 7.58579 18 8Z" fill="white"/>
       </svg>
     <% end %>
-    <h1 class="text-[18px] font-bold flex-1 text-center">Profile</h1>
+    <h1 class="text-[18px] font-bold mx-auto">Profile</h1>
   </div>
 
   <!-- Profile Picture and Info -->
   <div class="text-center mb-8">
-    <div class="relative mx-auto w-24 h-24 mb-4">
-      <div class="w-24 h-24 rounded-full bg-gray-400 flex items-center justify-center overflow-hidden">
+    <div class="relative mx-auto w-32 h-32 mb-4">
+      <div class="w-32 h-32 rounded-full bg-gray-400 flex items-center justify-center overflow-hidden">
         <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-600">
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
           <circle cx="12" cy="7" r="4"></circle>
@@ -20,129 +20,39 @@
       </div>
     </div>
     
-    <h2 class="text-xl font-bold mb-1"><%= current_user.full_name || "User" %></h2>
-    <p class="text-gray-400 text-sm"><%= current_user.email %></p>
+    <h1 class="text-[22px] font-bold mb-1"><%= current_user.full_name %></h1>
+    <p class="text-[#8FA8CC] text-base"><%= current_user.email %></p>
   </div>
 
   <!-- Profile Options -->
   <div class="space-y-4 mb-8">
     <!-- Edit Profile Button -->
-    <button onclick="toggleEditForm()" class="w-full flex items-center p-4 bg-white bg-opacity-10 rounded-lg backdrop-blur-sm hover:bg-opacity-20 transition-all">
-      <div class="w-10 h-10 rounded-lg bg-blue-500 flex items-center justify-center mr-4">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white">
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-          <circle cx="12" cy="7" r="4"></circle>
+    <%= link_to profile_edit_path, class: "w-full flex items-center" do %>
+      <div class="w-[48px] h-[48px] rounded-lg bg-[#21334A] flex items-center justify-center mr-4">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20" fill="none">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M19.6488 17.875C18.2209 15.4066 16.0206 13.6366 13.4528 12.7975C16.0635 11.2433 17.3141 8.13638 16.5082 5.2069C15.7022 2.27741 13.0383 0.247449 10 0.247449C6.96167 0.247449 4.29779 2.27741 3.49182 5.2069C2.68585 8.13638 3.93645 11.2433 6.54719 12.7975C3.97938 13.6356 1.77906 15.4056 0.35125 17.875C0.208704 18.1074 0.203527 18.3989 0.337731 18.6363C0.471935 18.8736 0.724375 19.0194 0.997024 19.0171C1.26967 19.0147 1.51958 18.8646 1.64969 18.625C3.41594 15.5725 6.53781 13.75 10 13.75C13.4622 13.75 16.5841 15.5725 18.3503 18.625C18.4804 18.8646 18.7303 19.0147 19.003 19.0171C19.2756 19.0194 19.5281 18.8736 19.6623 18.6363C19.7965 18.3989 19.7913 18.1074 19.6488 17.875ZM4.75 7C4.75 4.1005 7.1005 1.75 10 1.75C12.8995 1.75 15.25 4.1005 15.25 7C15.25 9.8995 12.8995 12.25 10 12.25C7.10179 12.2469 4.7531 9.89821 4.75 7Z" fill="white"/>
         </svg>
       </div>
-      <span class="text-white font-medium">Edit Profile</span>
-    </button>
+      <span class="text-base">Edit Profile</span>
+    <% end %>
 
     <!-- Change Password Button -->
-    <%= link_to edit_user_registration_path, class: "w-full flex items-center p-4 bg-white bg-opacity-10 rounded-lg backdrop-blur-sm hover:bg-opacity-20 transition-all" do %>
-      <div class="w-10 h-10 rounded-lg bg-orange-500 flex items-center justify-center mr-4">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white">
+    <%= link_to edit_user_registration_path, class: "w-full flex items-center" do %>
+      <div class="w-[48px] h-[48px] rounded-lg bg-[#21334A] flex items-center justify-center mr-4">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white">
           <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
           <circle cx="12" cy="16" r="1"></circle>
           <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
         </svg>
       </div>
-      <span class="text-white font-medium">Change Password</span>
+      <span class="text-base">Change Password</span>
     <% end %>
   </div>
 
   <!-- Logout Button -->
   <%= button_to destroy_user_session_path, method: :delete, 
-      class: "w-full bg-red-500 text-white py-3 rounded-lg font-bold hover:bg-red-600 transition-colors",
+      class: "w-full bg-[#C93B3B] text-white py-3 rounded-3xl font-bold hover:bg-red-600 transition-colors absolute bottom-5 left-0",
       data: { confirm: "Are you sure you want to log out?" } do %>
     Log out
   <% end %>
 </div>
-
-<!-- Edit Profile Modal/Form (Hidden by default) -->
-<div id="edit-profile-form" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
-  <div class="bg-[#1A2A3A] rounded-lg w-full max-w-md p-6">
-    <!-- Modal Header -->
-    <div class="flex items-center justify-between mb-6">
-      <h3 class="text-lg font-bold text-white">Edit Profile</h3>
-      <button onclick="toggleEditForm()" class="text-gray-400 hover:text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </button>
-    </div>
-
-    <!-- Profile Picture -->
-    <div class="text-center mb-6">
-      <div class="relative mx-auto w-20 h-20 mb-4">
-        <div class="w-20 h-20 rounded-full bg-gray-400 flex items-center justify-center overflow-hidden">
-          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-600">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-            <circle cx="12" cy="7" r="4"></circle>
-          </svg>
-        </div>
-        <!-- Edit Icon -->
-        <div class="absolute bottom-0 right-0 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white">
-            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-          </svg>
-        </div>
-      </div>
-      <h4 class="text-white font-medium"><%= current_user.full_name || "User" %></h4>
-    </div>
-
-    <!-- Edit Form -->
-    <%= form_with model: current_user, url: update_profile_path, method: :patch, local: true, class: "space-y-4" do |f| %>
-      <!-- Name Field -->
-      <div>
-        <label class="block text-gray-300 text-sm font-medium mb-2">Name</label>
-        <%= f.text_field :full_name, 
-            class: "w-full h-12 rounded-lg bg-[#21334A] text-white px-4 border-none focus:ring-2 focus:ring-blue-500",
-            placeholder: "Enter your name" %>
-      </div>
-
-      <!-- Email Field -->
-      <div>
-        <label class="block text-gray-300 text-sm font-medium mb-2">Email</label>
-        <%= f.email_field :email, 
-            class: "w-full h-12 rounded-lg bg-[#21334A] text-white px-4 border-none focus:ring-2 focus:ring-blue-500",
-            placeholder: "Enter your email" %>
-      </div>
-
-      <!-- Phone Field -->
-      <div>
-        <label class="block text-gray-300 text-sm font-medium mb-2">Phone</label>
-        <%= f.text_field :phone, 
-            class: "w-full h-12 rounded-lg bg-[#21334A] text-white px-4 border-none focus:ring-2 focus:ring-blue-500",
-            placeholder: "Enter your phone number" %>
-      </div>
-
-      <!-- Address Field -->
-      <div>
-        <label class="block text-gray-300 text-sm font-medium mb-2">Address</label>
-        <%= f.text_area :address, 
-            class: "w-full h-20 rounded-lg bg-[#21334A] text-white px-4 py-3 border-none focus:ring-2 focus:ring-blue-500 resize-none",
-            placeholder: "Enter your address" %>
-      </div>
-
-      <!-- Save Button -->
-      <%= f.submit "Save Changes", 
-          class: "w-full bg-blue-500 text-white py-3 rounded-lg font-bold hover:bg-blue-600 transition-colors" %>
-    <% end %>
-  </div>
-</div>
-
-<script>
-  function toggleEditForm() {
-    const form = document.getElementById('edit-profile-form');
-    form.classList.toggle('hidden');
-  }
-
-  // Close modal when clicking outside
-  document.getElementById('edit-profile-form').addEventListener('click', function(e) {
-    if (e.target === this) {
-      toggleEditForm();
-    }
-  });
-</script>

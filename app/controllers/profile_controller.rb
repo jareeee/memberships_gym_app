@@ -4,6 +4,10 @@ class ProfileController < ApplicationController
   def show
   end
 
+  def edit
+
+  end
+
   def update
     if current_user.update(user_params)
       redirect_to profile_path, notice: 'Profile updated successfully!'
