@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   get '/check-in', to: 'check_ins#new', as: :new_check_in
   post '/check-in', to: 'check_ins#create', as: :check_in
 
-  get '/profile', to: 'profile#show'
-  get '/profile/edit', to: 'profile#edit'
-  patch '/update', to: 'profile#update'
+  get '/profile', to: 'profile#show', as: :profile
+  get '/profile/edit', to: 'profile#edit', as: :edit_profile
+  patch '/profile/update', to: 'profile#update', as: :update_profile
 end

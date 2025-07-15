@@ -5,15 +5,15 @@ class ProfileController < ApplicationController
   end
 
   def edit
-
   end
 
   def update
     if current_user.update(user_params)
-      redirect_to profile_path, notice: 'Profile updated successfully!'
+      flash.now[:notice] = "Profile updated successfully"
     else
-      render :show, alert: 'Failed to update profile.'
+       flash.now[:alert] = "Failed to update profile"
     end
+    redirect_to edit_profile_path, notice: flash[:notice], alert: flash[:alert]
   end
 
   private

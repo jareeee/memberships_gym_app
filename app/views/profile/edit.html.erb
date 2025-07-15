@@ -1,0 +1,81 @@
+<div class="min-h-screen w-[390px] ">
+  <!-- Header -->
+  <div class="flex items-center mb-8 mt-7 relative">
+    <%= link_to profile_path, class: "absolute" do %>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    <% end %>
+    <h1 class="text-[18px] font-bold mx-auto">Edit Profile</h1>
+  </div>
+
+  <!-- Profile Picture Section -->
+  <div class="text-center mb-8">
+    <div class="relative mx-auto w-32 h-32 mb-4">
+      <div class="w-32 h-32 rounded-full bg-gray-400 flex items-center justify-center overflow-hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-600">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      </div>
+    </div>
+    
+    <h1 class="text-[22px] font-bold mb-1"><%= current_user.full_name %></h1>
+  </div>
+
+  <!-- Edit Form -->
+  <%= form_with model: current_user, url: update_profile_path, method: :patch, local: true, class: "space-y-6", data: { turbo: false }  do |f| %>
+    
+    <!-- Flash Messages -->
+    <% if notice %>
+      <div class="bg-green-500 bg-opacity-20 border border-green-500 rounded-lg p-3 mb-4">
+        <p class="text-sm"><%= notice %></p>
+      </div>
+    <% end %>
+    
+    <% if alert %>
+      <div class="bg-red-500 bg-opacity-20 border border-red-500 rounded-lg p-3 mb-4">
+        <p class="text-sm"><%= alert %></p>
+      </div>
+    <% end %>
+
+    <!-- Name Field -->
+    <div>
+      <label class="block text-base mb-2">Name</label>
+      <%= f.text_field :full_name, 
+          class: "w-full h-12 rounded-xl bg-[#21334A] text-white px-4 border-none focus:ring-2 focus:ring-blue-500 focus:outline-none",
+          placeholder: "Enter your name" %>
+    </div>
+
+    <!-- Email Field -->
+    <div>
+      <label class="block text-base mb-2">Email</label>
+      <%= f.email_field :email, 
+          class: "w-full h-12 rounded-xl bg-[#21334A] text-white px-4 border-none focus:ring-2 focus:ring-blue-500 focus:outline-none",
+          placeholder: "Enter your email" %>
+    </div>
+
+    <!-- Phone Field -->
+    <div>
+      <label class="block text-base mb-2">Phone</label>
+      <%= f.text_field :phone, 
+          class: "w-full h-12 rounded-xl bg-[#21334A] text-white px-4 border-none focus:ring-2 focus:ring-blue-500 focus:outline-none",
+          placeholder: "Enter your phone number" %>
+    </div>
+
+    <!-- Address Field -->
+    <div>
+      <label class="block text-base mb-2">Address</label>
+      <%= f.text_area :address, 
+          class: "w-full h-24 rounded-xl bg-[#21334A] text-white px-4 py-3 border-none focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none",
+          placeholder: "Enter your address" %>
+    </div>
+
+    <!-- Save Button -->
+    <div class="pt-8">
+      <%= f.submit "Save Changes", 
+          class: "w-full bg-[#4285F4] text-white py-4 rounded-xl font-bold text-lg hover:bg-blue-600 transition-colors shadow-lg" %>
+    </div>
+  <% end %>
+</div>
