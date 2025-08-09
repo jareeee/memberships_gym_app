@@ -115,10 +115,13 @@ GEM
     erb (4.0.4)
       cgi (>= 0.3.3)
     erubi (1.13.1)
+    event_stream_parser (1.0.0)
     faraday (2.13.2)
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
+    faraday-multipart (1.1.1)
+      multipart-post (~> 2.0)
     faraday-net_http (3.4.1)
       net-http (>= 0.5.0)
     globalid (1.2.1)
@@ -156,6 +159,7 @@ GEM
     minitest (5.25.5)
     msgpack (1.8.0)
     multi_xml (0.6.0)
+    multipart-post (2.4.1)
     mutex_m (0.3.0)
     net-http (0.6.0)
       uri
@@ -268,6 +272,10 @@ GEM
       actionpack (>= 5.2)
       railties (>= 5.2)
     rexml (3.4.1)
+    ruby-openai (8.1.0)
+      event_stream_parser (>= 0.3.0, < 2.0.0)
+      faraday (>= 1)
+      faraday-multipart (>= 1)
     rubyzip (2.4.1)
     securerandom (0.3.2)
     selenium-webdriver (4.26.0)
@@ -350,6 +358,7 @@ DEPENDENCIES
   pg (~> 1.1)
   puma (>= 5.0)
   rails (~> 7.1.5, >= 7.1.5.1)
+  ruby-openai
   selenium-webdriver
   sprockets-rails
   stimulus-rails
