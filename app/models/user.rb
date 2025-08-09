@@ -11,6 +11,10 @@ class User < ApplicationRecord
 
   has_many :check_ins, dependent: :destroy
 
+  has_many :workout_plans, dependent: :destroy
+  
+  has_many :messages, dependent: :destroy
+
   def self.from_omniauth(access_token)
     data = access_token.info
     user = User.where(email: data['email']).first
