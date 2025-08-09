@@ -72,6 +72,49 @@
           placeholder: "Enter your address" %>
     </div>
 
+    <!-- Birthdate Field -->
+    <div>
+      <label class="block text-base mb-2">Birthdate</label>
+      <%= f.date_field :birthdate, 
+          class: "w-full h-12 rounded-xl bg-[#21334A] text-white px-4 border-none focus:ring-2 focus:ring-blue-500 focus:outline-none",
+          placeholder: "Select your birthdate" %>
+    </div>
+
+    <!-- Gender Field -->
+    <div>
+      <label class="block text-base mb-2">Gender</label>
+      <%= f.select :gender, 
+          options_for_select([
+            ['Select Gender', ''],
+            ['Male', 'male'],
+            ['Female', 'female'],
+            ['Other', 'other']
+          ], current_user.gender),
+          {},
+          class: "w-full h-12 rounded-xl bg-[#21334A] text-white px-4 border-none focus:ring-2 focus:ring-blue-500 focus:outline-none" %>
+    </div>
+
+    <!-- Height Field -->
+    <div>
+      <label class="block text-base mb-2">Height (cm)</label>
+      <%= f.number_field :height_cm, 
+          class: "w-full h-12 rounded-xl bg-[#21334A] text-white px-4 border-none focus:ring-2 focus:ring-blue-500 focus:outline-none",
+          placeholder: "Enter your height in cm",
+          min: 100,
+          max: 250 %>
+    </div>
+
+    <!-- Weight Field -->
+    <div>
+      <label class="block text-base mb-2">Weight (kg)</label>
+      <%= f.number_field :weight_kg, 
+          step: 0.1,
+          class: "w-full h-12 rounded-xl bg-[#21334A] text-white px-4 border-none focus:ring-2 focus:ring-blue-500 focus:outline-none",
+          placeholder: "Enter your weight in kg",
+          min: 30,
+          max: 300 %>
+    </div>
+
     <!-- Save Button -->
     <div class="pt-8">
       <%= f.submit "Save Changes", 
