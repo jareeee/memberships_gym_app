@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_08_09_140420) do
+ActiveRecord::Schema[7.1].define(version: 2025_08_09_143700) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -44,6 +44,18 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_09_140420) do
     t.index ["user_id"], name: "index_memberships_on_user_id"
   end
 
+  create_table "messages", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.integer "role", default: 0, null: false
+    t.text "content", null: false
+    t.jsonb "metadata", default: {}
+    t.bigint "workout_plan_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_messages_on_user_id"
+    t.index ["workout_plan_id"], name: "index_messages_on_workout_plan_id"
+  end
+
   create_table "payments", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.decimal "amount"
@@ -53,6 +65,19 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_09_140420) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_payments_on_user_id"
+  end
+
+  create_table "plan_exercises", force: :cascade do |t|
+    t.bigint "workout_plan_id", null: false
+    t.string "exercise", null: false
+    t.integer "sets"
+    t.string "reps"
+    t.integer "rest_seconds"
+    t.string "tempo"
+    t.jsonb "modifiers", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["workout_plan_id"], name: "index_plan_exercises_on_workout_plan_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -74,8 +99,24 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_09_140420) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "workout_plans", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "title", null: false
+    t.text "summary"
+    t.jsonb "notes", default: {}
+    t.string "focus_area"
+    t.jsonb "meta", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_workout_plans_on_user_id"
+  end
+
   add_foreign_key "check_ins", "gym_locations"
   add_foreign_key "check_ins", "users"
   add_foreign_key "memberships", "users"
+  add_foreign_key "messages", "users"
+  add_foreign_key "messages", "workout_plans"
   add_foreign_key "payments", "users"
+  add_foreign_key "plan_exercises", "workout_plans"
+  add_foreign_key "workout_plans", "users"
 end
