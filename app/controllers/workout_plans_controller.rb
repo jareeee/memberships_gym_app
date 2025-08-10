@@ -1,6 +1,7 @@
 
 class WorkoutPlansController < ApplicationController
   before_action :authenticate_user!
+  before_action :check_membership_and_profile, except: [:index]
   before_action :find_workout_plan, only: [:show, :add_message]
   
   def index
@@ -125,6 +126,27 @@ class WorkoutPlansController < ApplicationController
   end
 
   private
+
+  def check_membership_and_profile
+    # Check jika user memiliki membership aktif
+    unless current_user.has_active_membership?
+      redirect_to memberships_path, alert: '🔒 AI Workout Plans memerlukan membership aktif. Silakan berlangganan terlebih dahulu!'
+      return
+    end
+
+    # Check jika profile sudah lengkap
+    unless profile_complete?
+      redirect_to edit_profile_path, alert: '📝 Untuk menggunakan AI Workout Plans, lengkapi profile Anda terlebih dahulu (tanggal lahir, jenis kelamin, tinggi, dan berat badan).'
+      return
+    end
+  end
+
+  def profile_complete?
+    current_user.birthdate.present? &&
+    current_user.gender.present? &&
+    current_user.height_cm.present? &&
+    current_user.weight_kg.present?
+  end
 
   def find_workout_plan
     slug = params[:slug]    

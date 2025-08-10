@@ -48,34 +48,116 @@
       </div>
     <% else %>
       <!-- Empty State -->
-      <div class="text-center py-12">
-        <div class="mb-6">
-          <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="mx-auto text-gray-600">
-            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-            <path d="m2 17 10 5 10-5"></path>
-            <path d="m2 12 10 5 10-5"></path>
-          </svg>
+      <% 
+        has_membership = current_user.has_active_membership?
+        profile_complete = current_user.birthdate.present? && current_user.gender.present? && current_user.height_cm.present? && current_user.weight_kg.present?
+        can_generate = has_membership && profile_complete
+        
+        # Determine tooltip message for empty state
+        if !has_membership && !profile_complete
+          empty_tooltip_message = "Memerlukan membership aktif dan profile lengkap untuk membuat workout plan"
+        elsif !has_membership
+          empty_tooltip_message = "Memerlukan membership aktif untuk membuat workout plan"
+        elsif !profile_complete
+          empty_tooltip_message = "Lengkapi profile terlebih dahulu untuk membuat workout plan"
+        else
+          empty_tooltip_message = ""
+        end
+      %>
+      
+      <div class="<%= 'relative group' unless can_generate %>">
+        <div class="text-center py-12">
+          <div class="mb-6">
+            <% if can_generate %>
+              <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="mx-auto text-gray-600">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                <path d="m2 17 10 5 10-5"></path>
+                <path d="m2 12 10 5 10-5"></path>
+              </svg>
+            <% else %>
+              <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="mx-auto text-orange-500">
+                <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+                <path d="m7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+            <% end %>
+          </div>
+          <% unless can_generate %>
+            <h3 class="text-[18px] font-bold text-white mb-2">Akses Terbatas</h3>
+          <% end %>
+          <p class="text-[14px] mb-6">
+            <% if can_generate %>
+              <span class="text-gray-400">Generate your first AI-powered workout plan below</span>
+            <% else %>
+              <span class="text-orange-400 font-medium">Complete your membership and profile to start generating workout plans</span>
+            <% end %>
+          </p>
         </div>
-        <h3 class="text-[18px] font-bold text-white mb-2">No Workout Plans Yet</h3>
-        <p class="text-[14px] text-gray-400 mb-6">
-          Generate your first AI-powered workout plan below
-        </p>
+        
+        <% unless can_generate %>
+          <!-- Tooltip for Empty State -->
+          <div class="absolute inset-0 pointer-events-none group-hover:pointer-events-auto">
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
+              <div class="bg-gray-900 text-white text-[12px] px-3 py-2 rounded-[8px] border border-gray-600 shadow-lg whitespace-nowrap">
+                <%= empty_tooltip_message %>
+                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1">
+                  <div class="border-4 border-transparent border-b-gray-900"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
       </div>
     <% end %>
 
     <!-- Generate New Workout Section -->
+    <% 
+      has_membership = current_user.has_active_membership?
+      profile_complete = current_user.birthdate.present? && current_user.gender.present? && current_user.height_cm.present? && current_user.weight_kg.present?
+      can_generate = has_membership && profile_complete
+      
+      # Determine tooltip message
+      if !has_membership && !profile_complete
+        tooltip_message = "Memerlukan membership aktif dan profile lengkap"
+      elsif !has_membership
+        tooltip_message = "Memerlukan membership aktif"
+      elsif !profile_complete
+        tooltip_message = "Lengkapi profile terlebih dahulu (tanggal lahir, jenis kelamin, tinggi, berat badan)"
+      else
+        tooltip_message = ""
+      end
+    %>
+    
     <div class="mt-8">
       <h2 class="text-[20px] font-bold text-white mb-4">Generate New Workout</h2>
-      <%= form_with url: workout_plans_path, method: :post, local: true, class: "space-y-4" do |form| %>
-        <div>
-          <%= form.text_area :request_text, 
-              placeholder: "Describe your workout needs... (e.g., 'Upper body workout at home for 30 minutes')", 
-              rows: 3,
-              class: "w-full bg-gray-800 text-white px-4 py-3 rounded-[12px] border border-gray-600 focus:border-blue-500 focus:outline-none text-[14px] resize-none" %>
-        </div>
-        <%= form.submit "Generate Workout Plan", 
-            class: "w-full bg-[#4282EB] text-white py-3 rounded-[12px] font-bold text-[16px] hover:bg-blue-600 transition-colors" %>
-      <% end %>
+      
+      <div class="<%= 'relative group' unless can_generate %>">
+        <%= form_with url: workout_plans_path, method: :post, local: true, class: "space-y-4" do |form| %>
+          <div>
+            <%= form.text_area :request_text, 
+                placeholder: can_generate ? "Describe your workout needs... (e.g., 'Upper body workout at home for 30 minutes')" : "Memerlukan membership dan profile lengkap untuk menggunakan fitur ini", 
+                rows: 3,
+                disabled: !can_generate,
+                class: "w-full px-4 py-3 rounded-[12px] border text-[14px] resize-none transition-colors #{can_generate ? 'bg-gray-800 text-white border-gray-600 focus:border-blue-500 focus:outline-none' : 'bg-gray-900 text-gray-500 border-gray-700 cursor-not-allowed'}" %>
+          </div>
+          <%= form.submit "Generate Workout Plan", 
+              disabled: !can_generate,
+              class: "w-full py-3 rounded-[12px] font-bold text-[16px] transition-colors #{can_generate ? 'bg-[#4282EB] text-white hover:bg-blue-600 cursor-pointer' : 'bg-gray-700 text-gray-500 cursor-not-allowed'}" %>
+        <% end %>
+        
+        <% unless can_generate %>
+          <!-- Tooltip -->
+          <div class="absolute inset-0 pointer-events-none group-hover:pointer-events-auto">
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
+              <div class="bg-gray-900 text-white text-[12px] px-3 py-2 rounded-[8px] border border-gray-600 shadow-lg whitespace-nowrap">
+                <%= tooltip_message %>
+                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1">
+                  <div class="border-4 border-transparent border-b-gray-900"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
     </div>
 
     <!-- Quick Suggestions -->
@@ -83,11 +165,19 @@
       <h3 class="text-[16px] font-medium text-white mb-3">Quick Suggestions</h3>
       <div class="grid grid-cols-1 gap-2">
         <% @quick_suggestions.each do |suggestion| %>
-          <button type="button" 
-                  onclick="fillSuggestion('<%= suggestion %>')"
-                  class="bg-gray-800 text-gray-300 px-4 py-3 rounded-[8px] text-[14px] hover:bg-gray-700 transition-colors text-left border border-gray-700">
-            <%= suggestion %>
-          </button>
+          <% if can_generate %>
+            <button type="button" 
+                    onclick="fillSuggestion('<%= suggestion %>')"
+                    class="bg-gray-800 text-gray-300 px-4 py-3 rounded-[8px] text-[14px] hover:bg-gray-700 transition-colors text-left border border-gray-700 cursor-pointer">
+              <%= suggestion %>
+            </button>
+          <% else %>
+            <button type="button" 
+                    disabled
+                    class="bg-gray-900 text-gray-600 px-4 py-3 rounded-[8px] text-[14px] transition-colors text-left border border-gray-800 cursor-not-allowed">
+              <%= suggestion %>
+            </button>
+          <% end %>
         <% end %>
       </div>
     </div>

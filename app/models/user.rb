@@ -29,4 +29,8 @@ class User < ApplicationRecord
     today = Date.current
     today.year - birthdate.year - ((today.month > birthdate.month || (today.month == birthdate.month && today.day >= birthdate.day)) ? 0 : 1)
   end
+
+  def has_active_membership?
+    memberships.active.where('end_date >= ?', Date.current).exists?
+  end
 end
