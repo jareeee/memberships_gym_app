@@ -6,13 +6,9 @@ class User < ApplicationRecord
   devise :omniauthable, omniauth_providers: [:google_oauth2]
 
   has_many :memberships, dependent: :destroy
-
   has_many :payments, dependent: :destroy
-
   has_many :check_ins, dependent: :destroy
-
   has_many :workout_plans, dependent: :destroy
-  
   has_many :messages, dependent: :destroy
 
   def self.from_omniauth(access_token)
@@ -25,5 +21,12 @@ class User < ApplicationRecord
     )
 
     user
+  end
+
+  def age
+    return unless birthdate
+
+    today = Date.current
+    today.year - birthdate.year - ((today.month > birthdate.month || (today.month == birthdate.month && today.day >= birthdate.day)) ? 0 : 1)
   end
 end

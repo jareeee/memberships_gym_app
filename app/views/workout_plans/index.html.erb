@@ -1,0 +1,107 @@
+<div class="min-h-screen text-white">
+  <!-- Header -->
+  <div class="flex items-center justify-between pt-[16px] pr-[16px] pb-[8px] pl-[16px]">
+    <%= link_to root_path do %>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15,18 9,12 15,6"></polyline>
+      </svg>
+    <% end %>
+    <h1 class="font-bold text-[18px] mx-auto">AI Workout Plans</h1>
+    <div class="w-6"></div> <!-- Spacer for centering -->
+  </div>
+
+  <!-- Content -->
+  <div class="px-[16px] mt-[20px]">
+    <% if @workout_plans.any? %>
+      <!-- Workout Plans List -->
+      <div class="space-y-4">
+        <% @workout_plans.each do |workout_plan| %>
+          <%= link_to workout_plan_path(workout_plan.slug), class: "block" do %>
+            <div class="bg-gray-800 rounded-[12px] p-4 hover:bg-gray-700 transition-colors">
+              <div class="flex items-center justify-between">
+                <div class="flex-1">
+                  <h3 class="text-[16px] font-bold text-white mb-2"><%= workout_plan.title %></h3>
+                  <p class="text-[14px] text-gray-300 line-clamp-2 mb-3">
+                    <%= truncate(workout_plan.summary, length: 100) %>
+                  </p>
+                  <div class="flex items-center space-x-3">
+                    <span class="bg-gray-700 text-[12px] text-gray-300 px-2 py-1 rounded-full">
+                      <%= workout_plan.focus_area.humanize %>
+                    </span>
+                    <span class="text-[12px] text-gray-400">
+                      <%= workout_plan.plan_exercises.count %> exercises
+                    </span>
+                    <span class="text-[12px] text-gray-400">
+                      <%= workout_plan.created_at.strftime("%b %d") %>
+                    </span>
+                  </div>
+                </div>
+                <div class="ml-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9,18 15,12 9,6"></polyline>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    <% else %>
+      <!-- Empty State -->
+      <div class="text-center py-12">
+        <div class="mb-6">
+          <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="mx-auto text-gray-600">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+            <path d="m2 17 10 5 10-5"></path>
+            <path d="m2 12 10 5 10-5"></path>
+          </svg>
+        </div>
+        <h3 class="text-[18px] font-bold text-white mb-2">No Workout Plans Yet</h3>
+        <p class="text-[14px] text-gray-400 mb-6">
+          Generate your first AI-powered workout plan below
+        </p>
+      </div>
+    <% end %>
+
+    <!-- Generate New Workout Section -->
+    <div class="mt-8">
+      <h2 class="text-[20px] font-bold text-white mb-4">Generate New Workout</h2>
+      <%= form_with url: workout_plans_path, method: :post, local: true, class: "space-y-4" do |form| %>
+        <div>
+          <%= form.text_area :request_text, 
+              placeholder: "Describe your workout needs... (e.g., 'Upper body workout at home for 30 minutes')", 
+              rows: 3,
+              class: "w-full bg-gray-800 text-white px-4 py-3 rounded-[12px] border border-gray-600 focus:border-blue-500 focus:outline-none text-[14px] resize-none" %>
+        </div>
+        <%= form.submit "Generate Workout Plan", 
+            class: "w-full bg-[#4282EB] text-white py-3 rounded-[12px] font-bold text-[16px] hover:bg-blue-600 transition-colors" %>
+      <% end %>
+    </div>
+
+    <!-- Quick Suggestions -->
+    <div class="mt-6">
+      <h3 class="text-[16px] font-medium text-white mb-3">Quick Suggestions</h3>
+      <div class="grid grid-cols-1 gap-2">
+        <% @quick_suggestions.each do |suggestion| %>
+          <button type="button" 
+                  onclick="fillSuggestion('<%= suggestion %>')"
+                  class="bg-gray-800 text-gray-300 px-4 py-3 rounded-[8px] text-[14px] hover:bg-gray-700 transition-colors text-left border border-gray-700">
+            <%= suggestion %>
+          </button>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function fillSuggestion(text) {
+    const textarea = document.querySelector('textarea[name="request_text"]');
+    if (textarea) {
+      textarea.value = text;
+      textarea.focus();
+      // Scroll to textarea
+      textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+</script>

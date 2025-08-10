@@ -17,4 +17,11 @@ Rails.application.routes.draw do
   get '/profile', to: 'profile#show', as: :profile
   get '/profile/edit', to: 'profile#edit', as: :edit_profile
   patch '/profile/update', to: 'profile#update', as: :update_profile
+
+  resources :workout_plans, only: [:show, :index, :create], param: :slug do
+    member do
+      post :add_message
+    end
+  end
+  resources :messages, only: [:create]
 end

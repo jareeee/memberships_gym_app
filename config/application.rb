@@ -22,6 +22,8 @@ module GymApp
     # in config/environments, which are processed later.
     #
     config.time_zone = 'Asia/Jakarta'
+
+    config.active_job.queue_adapter = :sidekiq
     # config.eager_load_paths << Rails.root.join("extras")
   end
 end

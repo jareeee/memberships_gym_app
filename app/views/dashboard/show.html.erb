@@ -29,7 +29,7 @@
   </div>
 
   <!-- Action Button -->
-  <div class="mt-4">
+  <div class="mt-4 space-y-3">
     <% if @membership.present? %>
       <%= link_to new_check_in_path, class: "bg-[#4282EB] text-white h-[48px] rounded-lg font-bold hover:bg-blue-600 transition-colors flex items-center space-x-2 w-full justify-center" do %>
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -39,6 +39,16 @@
       <% end %>
     <% else %>
         <%= link_to "Renew Membership", memberships_path, class: "bg-[#DBE5F2] text-[#141A1F] h-[48px] rounded-xl font-bold hover:bg-gray-100 transition-colors w-full flex items-center justify-center" %>
+    <% end %>
+    
+    <!-- AI Workout Plans Button -->
+    <%= link_to workout_plans_path, class: "bg-gray-800 text-white h-[48px] rounded-lg font-bold hover:bg-gray-700 transition-colors flex items-center space-x-2 w-full justify-center border border-gray-600" do %>
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+        <path d="m2 17 10 5 10-5"></path>
+        <path d="m2 12 10 5 10-5"></path>
+      </svg>
+      <span>AI WORKOUT PLANS</span>
     <% end %>
   </div>
 
