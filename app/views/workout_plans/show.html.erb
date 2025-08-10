@@ -102,3 +102,107 @@
   <!-- Bottom padding to account for fixed input -->
   <div class="h-[100px]"></div>
 </div>
+
+<script>
+  // Auto-refresh jika workout plan masih dalam status generating
+  <% if @workout_plan.meta['status'] == 'generating' %>
+    let isCheckingStatus = true;
+    let statusInterval;
+    
+    // Show loading indicator
+    function showLoadingIndicator() {
+      const workoutCard = document.querySelector('.bg-gray-800.rounded-\\[16px\\]');
+      if (workoutCard) {
+        workoutCard.innerHTML = `
+          <div class="text-center py-8">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
+            <h2 class="text-[18px] font-bold text-white mb-2">Generating your workout plan...</h2>
+            <p class="text-[14px] text-gray-300">Please wait while we create your personalized workout.</p>
+          </div>
+        `;
+      }
+    }
+    
+    // Stop checking and cleanup
+    function stopChecking() {
+      if (statusInterval) {
+        clearInterval(statusInterval);
+        statusInterval = null;
+      }
+      isCheckingStatus = false;
+      console.log('Stopped status checking');
+    }
+    
+    // Check status via JSON API
+    function checkWorkoutStatus() {
+      if (!isCheckingStatus) {
+        return;
+      }
+      
+      fetch(window.location.href + '.json')
+      .then(response => response.json())
+      .then(data => {
+        console.log('Status check:', data);
+        
+        // If status is completed or has exercises, reload the page
+        if (data.status === 'completed' || data.exercises_count > 0) {
+          console.log('Workout plan completed, reloading...');
+          stopChecking();
+          window.location.reload();
+          return;
+        }
+        
+        // If failed, show error and reload
+        if (data.status === 'failed') {
+          console.log('Workout plan failed, reloading...');
+          stopChecking();
+          window.location.reload();
+          return;
+        }
+        
+        // If still generating, continue checking
+        if (data.status === 'generating') {
+          console.log('Still generating...');
+        }
+      })
+      .catch(error => {
+        console.log('Status check failed:', error);
+      });
+    }
+    
+    // Start loading indicator
+    showLoadingIndicator();
+    
+    // Check status every 3 seconds
+    statusInterval = setInterval(checkWorkoutStatus, 3000);
+    
+    // Stop checking after 3 minutes (timeout)
+    setTimeout(() => {
+      if (isCheckingStatus) {
+        stopChecking();
+        console.log('Status checking timed out');
+        // Optionally reload after timeout
+        window.location.reload();
+      }
+    }, 180000);
+    
+    // Also check when page becomes visible again
+    document.addEventListener('visibilitychange', function() {
+      if (!document.hidden && isCheckingStatus) {
+        checkWorkoutStatus();
+      }
+    });
+    
+    // Immediate first check after 1 second
+    setTimeout(() => {
+      if (isCheckingStatus) {
+        checkWorkoutStatus();
+      }
+    }, 1000);
+    
+    // Stop checking if user navigates away
+    window.addEventListener('beforeunload', stopChecking);
+  <% else %>
+    console.log('Workout plan status: <%= @workout_plan.meta['status'] %>');
+  <% end %>
+</script>

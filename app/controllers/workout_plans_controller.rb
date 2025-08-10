@@ -22,6 +22,17 @@ class WorkoutPlansController < ApplicationController
   
   def show
     # Workout plan sudah di-load di before_action
+    respond_to do |format|
+      format.html # Normal HTML response
+      format.json { 
+        render json: { 
+          status: @workout_plan.meta&.dig('status') || 'unknown',
+          title: @workout_plan.title,
+          exercises_count: @workout_plan.plan_exercises.count,
+          updated_at: @workout_plan.updated_at.iso8601
+        }
+      }
+    end
   end
 
   def create
@@ -39,14 +50,16 @@ class WorkoutPlansController < ApplicationController
           }
         )
 
+        @workout_plan.reload
+        
         if @workout_plan.slug.blank?
-          Rails.logger.error "Slug not generated for workout plan #{@workout_plan.id}"
-          raise "Failed to generate slug for workout plan"
+          @workout_plan.send(:generate_slug)
+          @workout_plan.save!
+          @workout_plan.reload
         end
 
         # Add initial chat history
         @workout_plan.add_to_chat_history('user', request_text)
-        @workout_plan.add_to_chat_history('assistant', "I'm generating your workout plan. This will take a moment...")
         
         # Enqueue background job untuk generate actual workout plan
         GenerateWorkoutPlanJob.perform_later(@workout_plan.id, request_text)
@@ -77,9 +90,6 @@ class WorkoutPlansController < ApplicationController
           request_text: request_text,
           existing_workout_plan: @workout_plan
         ).call
-        
-        # Add assistant response to history  
-        @workout_plan.add_to_chat_history('assistant', "Generated new workout plan: #{new_plan.title}")
         
         # Update current workout plan with new data
         @workout_plan.update!(
@@ -117,6 +127,7 @@ class WorkoutPlansController < ApplicationController
   private
 
   def find_workout_plan
-    @workout_plan = current_user.workout_plans.find_by!(slug: params[:id])
+    slug = params[:slug]    
+    @workout_plan = current_user.workout_plans.find_by!(slug: slug)
   end
 end
