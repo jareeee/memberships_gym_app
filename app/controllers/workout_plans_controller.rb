@@ -29,7 +29,7 @@ class WorkoutPlansController < ApplicationController
     
     if request_text.present?
       begin
-        workout_plan = current_user.workout_plans.create(
+        @workout_plan = current_user.workout_plans.create!(
           title: "Generating workout plan...",
           summary: "Your workout plan is being generated. Please wait.",
           focus_area: "full_body",
@@ -38,19 +38,24 @@ class WorkoutPlansController < ApplicationController
             status: "generating"
           }
         )
-        
+
+        if @workout_plan.slug.blank?
+          Rails.logger.error "Slug not generated for workout plan #{@workout_plan.id}"
+          raise "Failed to generate slug for workout plan"
+        end
+
         # Add initial chat history
-        workout_plan.add_to_chat_history('user', request_text)
-        workout_plan.add_to_chat_history('assistant', "I'm generating your workout plan. This will take a moment...")
+        @workout_plan.add_to_chat_history('user', request_text)
+        @workout_plan.add_to_chat_history('assistant', "I'm generating your workout plan. This will take a moment...")
         
         # Enqueue background job untuk generate actual workout plan
-        GenerateWorkoutPlanJob.perform_later(workout_plan.id, request_text)
+        GenerateWorkoutPlanJob.perform_later(@workout_plan.id, request_text)
 
-        # Redirect langsung ke chat page
-        workout_plan.reload
-        redirect_to workout_plan_path(workout_plan.slug), notice: 'Generating your workout plan...'
+        # Redirect langsung ke chat page menggunakan slug yang sudah ter-generate
+        redirect_to workout_plan_path(@workout_plan.slug), notice: 'Generating your workout plan...'
       rescue => e
         Rails.logger.error "Failed to create workout plan: #{e.message}"
+        Rails.logger.error e.backtrace.join("\n")
         redirect_back(fallback_location: workout_plans_path, alert: 'Failed to generate workout plan. Please try again.')
       end
     else
