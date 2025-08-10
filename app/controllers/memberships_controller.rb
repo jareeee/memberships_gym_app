@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class MembershipsController < ApplicationController
+  before_action :authenticate_user!
+
   def index
     @times = [1, 3, 6, 12]
   end
@@ -24,12 +26,27 @@ class MembershipsController < ApplicationController
   end
 
   def paid
+    # Ensure user is authenticated
+    unless current_user
+      redirect_to new_user_session_path, alert: 'Please sign in to view your membership.'
+      return
+    end
+
     membership = current_user.memberships.active.first
-    return unless membership
+    unless membership
+      redirect_to memberships_path, alert: 'No active membership found.'
+      return
+    end
+
+    last_payment = current_user.payments.last
+    unless last_payment
+      redirect_to memberships_path, alert: 'No payment records found.'
+      return
+    end
 
     @expiry_date = membership.end_date
-    @total_payment = current_user.payments.last.amount
-    @duration = current_user.payments.last.membership_duration
+    @total_payment = last_payment.amount
+    @duration = last_payment.membership_duration
   end
 
   private
