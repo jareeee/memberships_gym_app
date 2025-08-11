@@ -1,57 +1,164 @@
 # See https://help.github.com/articles/ignoring-files for more about ignoring files.
 
-# Bundler config
+# =============================================================================
+# RUBY & RAILS
+# =============================================================================
+# Bundler
 /.bundle
+/vendor/bundle
+*.gem
 
-# Env files
+# Rails secrets & credentials
+/config/master.key
+/config/credentials/*.key
+
+# Rails cache
+/tmp/cache/
+
+# =============================================================================
+# ENVIRONMENT & CONFIGURATION
+# =============================================================================
+# Environment files (except templates)
 /.env*
 !/.env*.erb
 
-# Logs & temp
+# Database configuration
+/config/database.yml
+!/config/database.yml.example
+
+# =============================================================================
+# LOGS & TEMPORARY FILES
+# =============================================================================
+# Application logs
 /log/*
-/tmp/*
 !/log/.keep
+*.log
+
+# Temporary files
+/tmp/*
 !/tmp/.keep
+
+# Process ID files
 /tmp/pids/*
 !/tmp/pids/
 !/tmp/pids/.keep
 
-# Storage
+# =============================================================================
+# STORAGE & UPLOADS
+# =============================================================================
+# Application storage
 /storage/*
 !/storage/.keep
+
+# Temporary storage
 /tmp/storage/*
 !/tmp/storage/
 !/tmp/storage/.keep
 
-# Assets
+# =============================================================================
+# ASSETS & FRONTEND
+# =============================================================================
+# Compiled assets
 /public/assets
 /public/packs
 /public/packs-test
 /app/assets/builds/*
 !/app/assets/builds/.keep
 
-# Master key
-/config/master.key
-/config/credentials/*.key
-
-# Node modules
+# Node.js
 /node_modules
 yarn-error.log
 npm-debug.log
 pnpm-debug.log
+.yarn-integrity
 
-# Ruby vendor
-/vendor/bundle
-*.gem
+# Package manager locks (optional - comment out if you want to track them)
+# yarn.lock
+# package-lock.json
+# pnpm-lock.yaml
 
-# OS/Editor files
-.DS_Store
+# =============================================================================
+# DEVELOPMENT TOOLS
+# =============================================================================
+# Code editors
 .vscode/*
 !.vscode/settings.json
 !.vscode/extensions.json
+!.vscode/tasks.json
+!.vscode/launch.json
 .idea/
+*.sublime-*
+*.swp
+*.swo
 
-# Docker artifacts
-*.pid
-*.log
+# Code coverage
+/coverage/
+.nyc_output/
+
+# Testing
+/test/tmp/
+/spec/tmp/
+
+# =============================================================================
+# SYSTEM FILES
+# =============================================================================
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.AppleDouble
+.LSOverride
+.Spotlight-V100
+.Trashes
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+Desktop.ini
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+
+# =============================================================================
+# DEPLOYMENT & DOCKER
+# =============================================================================
+# Docker
 docker-compose.override.yml
+.dockerignore.local
+
+# PID files
+*.pid
+
+# Deployment
+/config/deploy/
+capistrano/
+
+# =============================================================================
+# MISC
+# =============================================================================
+# Backup files
+*.bak
+*.backup
+*.old
+*~
+
+# Archive files
+*.zip
+*.tar
+*.tar.gz
+*.rar
+
+# Local configuration
+.local
+local_settings.py

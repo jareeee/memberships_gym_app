@@ -1,37 +1,106 @@
 # See https://docs.docker.com/engine/reference/builder/#dockerignore-file for more about ignoring files.
 
-# Ignore git directory.
+# =============================================================================
+# VERSION CONTROL
+# =============================================================================
 /.git/
+.git
 
-# Ignore bundler config.
-/.bundle
-
-# Ignore all environment files (except templates).
+# =============================================================================
+# ENVIRONMENT & CONFIGURATION
+# =============================================================================
+# Environment files (except templates)
 /.env*
 !/.env*.erb
 
-# Ignore all default key files.
+# Security & Keys
 /config/master.key
 /config/credentials/*.key
 
-# Ignore all logfiles and tempfiles.
-/log/*
-/tmp/*
-!/log/.keep
-!/tmp/.keep
+# Bundler config
+/.bundle
+vendor/bundle
 
-# Ignore pidfiles, but keep the directory.
+# =============================================================================
+# LOGS & TEMPORARY FILES
+# =============================================================================
+# Log files
+/log/*
+!/log/.keep
+log
+
+# Temporary files
+/tmp/*
+!/tmp/.keep
+tmp
+
+# Process ID files
 /tmp/pids/*
 !/tmp/pids/.keep
 
-# Ignore storage (uploaded files in development and any SQLite databases).
+# =============================================================================
+# STORAGE & UPLOADS
+# =============================================================================
+# Application storage
 /storage/*
 !/storage/.keep
+storage
+
+# Temporary storage
 /tmp/storage/*
 !/tmp/storage/.keep
 
-# Ignore assets.
+# =============================================================================
+# ASSETS & DEPENDENCIES
+# =============================================================================
+# Node.js dependencies
 /node_modules/
+node_modules
+
+# Compiled assets
 /app/assets/builds/*
 !/app/assets/builds/.keep
+app/assets/builds
+
+# Public assets
 /public/assets
+public/assets
+public/packs
+
+# =============================================================================
+# SYSTEM FILES
+# =============================================================================
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Windows
+*.swp
+*.swo
+
+# =============================================================================
+# DEVELOPMENT & TESTING
+# =============================================================================
+# Coverage reports
+/coverage/
+
+# Test artifacts
+/test/tmp/
+
+# Editor files
+.vscode/
+.idea/
+*.sublime-*
+
+# =============================================================================
+# DOCKER
+# =============================================================================
+# Docker files (if you don't want to include them in the image)
+# Dockerfile*
+# docker-compose*
+# .dockerignore
