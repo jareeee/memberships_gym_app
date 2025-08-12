@@ -4,6 +4,6 @@ class MessagesController < ApplicationController
   def create
     body = params.require(:content)
     plan = GenerateWorkoutPlanJob.perform_later(current_user.id, body)
-    redirect_to workout_plans_path, notice: "Lagi dibuat, nanti auto muncul."
+    redirect_to workout_plans_path
   end
 end

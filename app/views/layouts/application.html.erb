@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>GymApp</title>
+    <title>LesgoGym</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -9,6 +9,7 @@
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    <link rel="icon" href="<%= asset_path('logo-gym-app.svg') %>">
   </head>
 
   <body class="<%= controller_name == 'memberships' && action_name == 'paid' ? 'bg-[#12211C]' : 'bg-[rgb(15,23,36)]' %> text-white">

@@ -3,10 +3,10 @@ class WorkoutPlansController < ApplicationController
   before_action :authenticate_user!
   before_action :check_membership_and_profile, except: [:index]
   before_action :find_workout_plan, only: [:show, :add_message]
-  
+
   def index
     @workout_plans = current_user.workout_plans.order(created_at: :desc)
-    
+
     all_suggestions = [
       "Upper body workout at home 30 minutes",
       "Lower body strength training",
@@ -17,14 +17,13 @@ class WorkoutPlansController < ApplicationController
       "Dumbbell only upper body",
       "HIIT 15 minutes",
     ]
-    
+
     @quick_suggestions = all_suggestions.sample(3)
   end
-  
+
   def show
-    # Workout plan sudah di-load di before_action
     respond_to do |format|
-      format.html # Normal HTML response
+      format.html
       format.json { 
         render json: { 
           status: @workout_plan.meta&.dig('status') || 'unknown',
@@ -38,7 +37,7 @@ class WorkoutPlansController < ApplicationController
 
   def create
     request_text = params[:request_text]
-    
+
     if request_text.present?
       begin
         @workout_plan = current_user.workout_plans.create!(
@@ -52,54 +51,47 @@ class WorkoutPlansController < ApplicationController
         )
 
         @workout_plan.reload
-        
+
         if @workout_plan.slug.blank?
           @workout_plan.send(:generate_slug)
           @workout_plan.save!
           @workout_plan.reload
         end
 
-        # Add initial chat history
         @workout_plan.add_to_chat_history('user', request_text)
-        
-        # Enqueue background job untuk generate actual workout plan
+
         GenerateWorkoutPlanJob.perform_later(@workout_plan.id, request_text)
 
-        # Redirect langsung ke chat page menggunakan slug yang sudah ter-generate
-        redirect_to workout_plan_path(@workout_plan.slug), notice: 'Generating your workout plan...'
+        redirect_to workout_plan_path(@workout_plan.slug)
       rescue => e
         Rails.logger.error "Failed to create workout plan: #{e.message}"
         Rails.logger.error e.backtrace.join("\n")
-        redirect_back(fallback_location: workout_plans_path, alert: 'Failed to generate workout plan. Please try again.')
+        redirect_back(fallback_location: workout_plans_path)
       end
     else
-      redirect_back(fallback_location: workout_plans_path, alert: 'Please enter a workout request.')
+      redirect_back(fallback_location: workout_plans_path)
     end
   end
 
   def add_message
     request_text = params[:request_text]
-    
+
     if request_text.present?
       begin
-        # Add user message to history
         @workout_plan.add_to_chat_history('user', request_text)
-        
-        # Generate new workout plan
+
         new_plan = Ai::WorkoutPlannerService.new(
           user: current_user, 
           request_text: request_text,
           existing_workout_plan: @workout_plan
         ).call
-        
-        # Update current workout plan with new data
+
         @workout_plan.update!(
           title: new_plan.title,
           summary: new_plan.summary,
           focus_area: new_plan.focus_area
         )
-        
-        # Replace exercises
+
         @workout_plan.plan_exercises.destroy_all
         new_plan.plan_exercises.each do |exercise|
           @workout_plan.plan_exercises.create!(
@@ -110,31 +102,28 @@ class WorkoutPlansController < ApplicationController
             tempo: exercise.tempo
           )
         end
-        
-        # Delete the temporary new plan
+
         new_plan.destroy
-        
-        redirect_to workout_plan_path(@workout_plan.slug), notice: 'Workout plan updated successfully!'
+
+        redirect_to workout_plan_path(@workout_plan.slug)
       rescue => e
         Rails.logger.error "Workout plan update failed: #{e.message}"
         @workout_plan.add_to_chat_history('assistant', "Sorry, I couldn't generate a new workout plan. Please try again.")
-        redirect_back(fallback_location: workout_plan_path(@workout_plan.slug), alert: 'Failed to update workout plan. Please try again.')
+        redirect_back(fallback_location: workout_plan_path(@workout_plan.slug))
       end
     else
-      redirect_back(fallback_location: workout_plan_path(@workout_plan.slug), alert: 'Please enter a workout request.')
+      redirect_back(fallback_location: workout_plan_path(@workout_plan.slug))
     end
   end
 
   private
 
   def check_membership_and_profile
-    # Check jika user memiliki membership aktif
     unless current_user.has_active_membership?
       redirect_to memberships_path, alert: '🔒 AI Workout Plans memerlukan membership aktif. Silakan berlangganan terlebih dahulu!'
       return
     end
 
-    # Check jika profile sudah lengkap
     unless profile_complete?
       redirect_to edit_profile_path, alert: '📝 Untuk menggunakan AI Workout Plans, lengkapi profile Anda terlebih dahulu (tanggal lahir, jenis kelamin, tinggi, dan berat badan).'
       return

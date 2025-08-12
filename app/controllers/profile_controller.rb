@@ -11,7 +11,7 @@ class ProfileController < ApplicationController
     if current_user.update(user_params)
       flash.now[:notice] = "Profile updated successfully"
     else
-       flash.now[:alert] = "Failed to update profile"
+      flash.now[:alert] = "Failed to update profile"
     end
     redirect_to edit_profile_path, notice: flash[:notice], alert: flash[:alert]
   end
