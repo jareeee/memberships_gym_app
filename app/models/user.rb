@@ -11,6 +11,8 @@ class User < ApplicationRecord
   has_many :workout_plans, dependent: :destroy
   has_many :messages, dependent: :destroy
 
+  WEEKLY_AI_LIMIT = 10
+
   def self.from_omniauth(access_token)
     data = access_token.info
     user = User.where(email: data['email']).first
@@ -34,15 +36,10 @@ class User < ApplicationRecord
     memberships.active.where('end_date >= ?', Date.current).exists?
   end
 
-  # --- AI weekly usage limiting ---
-  WEEKLY_AI_LIMIT = 10
-
-  # Returns the Date of the Monday for the given date (start of week as Monday)
   def monday_for(date)
     date - ((date.wday + 6) % 7)
   end
 
-  # Ensure the counter is for the current week; resets on Monday.
   def ensure_ai_weekly_period!
     today = Date.current
     current_monday = monday_for(today)
@@ -60,7 +57,6 @@ class User < ApplicationRecord
     ai_remaining_uses > 0
   end
 
-  # Increment usage count for this week.
   def increment_ai_usage!
     ensure_ai_weekly_period!
     increment!(:ai_weekly_uses_count)
