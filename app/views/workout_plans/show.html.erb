@@ -87,15 +87,16 @@
     </div>
 
     <!-- Input Section -->
-  <div class="fixed bottom-0 left-0 right-0 bg-[#1A1A1A] p-4 border-t border-gray-700">
-      <%= form_with url: add_message_workout_plan_path(@workout_plan.slug), method: :post, local: true, class: "flex items-center space-x-3" do |form| %>
+    <div class="fixed bottom-0 left-0 right-0 bg-[#1A1A1A] p-4 border-t border-gray-700">
+      <!-- Posting here will create a brand new workout plan (new chat) -->
+      <%= form_with url: workout_plans_path, method: :post, local: true, class: "flex items-center space-x-3" do |form| %>
         <div class="flex-1 relative">
           <%= form.text_field :request_text, 
         placeholder: (remaining_uses && remaining_uses <= 0) ? "Kuota AI minggu ini habis. Reset setiap Senin" : "Type your request", 
         disabled: (remaining_uses && remaining_uses <= 0),
         class: "w-full bg-gray-800 text-white px-4 py-3 rounded-[24px] border border-gray-600 focus:border-blue-500 focus:outline-none text-[14px] #{(remaining_uses && remaining_uses <= 0) ? 'opacity-60 cursor-not-allowed' : ''}" %>
         </div>
-    <%= form.submit (remaining_uses && remaining_uses <= 0) ? "Kuota Habis" : "Generate", 
+        <%= form.submit (remaining_uses && remaining_uses <= 0) ? "Kuota Habis" : "Generate New", 
       disabled: (remaining_uses && remaining_uses <= 0),
       class: "bg-[#4282EB] text-white px-6 py-3 rounded-[24px] font-medium text-[14px] hover:bg-blue-600 transition-colors #{(remaining_uses && remaining_uses <= 0) ? 'opacity-60 cursor-not-allowed' : ''}" %>
       <% end %>
