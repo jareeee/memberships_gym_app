@@ -33,4 +33,36 @@ class User < ApplicationRecord
   def has_active_membership?
     memberships.active.where('end_date >= ?', Date.current).exists?
   end
+
+  # --- AI weekly usage limiting ---
+  WEEKLY_AI_LIMIT = 10
+
+  # Returns the Date of the Monday for the given date (start of week as Monday)
+  def monday_for(date)
+    date - ((date.wday + 6) % 7)
+  end
+
+  # Ensure the counter is for the current week; resets on Monday.
+  def ensure_ai_weekly_period!
+    today = Date.current
+    current_monday = monday_for(today)
+    if ai_weekly_period_start != current_monday
+      update_columns(ai_weekly_period_start: current_monday, ai_weekly_uses_count: 0)
+    end
+  end
+
+  def ai_remaining_uses
+    ensure_ai_weekly_period!
+    WEEKLY_AI_LIMIT - ai_weekly_uses_count.to_i
+  end
+
+  def ai_usage_allowed?
+    ai_remaining_uses > 0
+  end
+
+  # Increment usage count for this week.
+  def increment_ai_usage!
+    ensure_ai_weekly_period!
+    increment!(:ai_weekly_uses_count)
+  end
 end

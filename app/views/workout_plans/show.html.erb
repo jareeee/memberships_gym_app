@@ -12,6 +12,10 @@
 
   <!-- Chat Interface -->
   <div class="px-[16px] mt-[20px]">
+    <% remaining_uses = current_user.ai_remaining_uses rescue nil %>
+    <% if remaining_uses.present? %>
+      <div class="mb-3 text-[12px] text-gray-400">Sisa kuota AI minggu ini: <span class="text-white font-medium"><%= remaining_uses %></span> / <%= User::WEEKLY_AI_LIMIT %></div>
+    <% end %>
     <!-- Chat History -->
     <% @workout_plan.chat_history.each do |message| %>
       <% if message['role'] == 'user' %>
@@ -83,15 +87,17 @@
     </div>
 
     <!-- Input Section -->
-    <div class="fixed bottom-0 left-0 right-0 bg-[#1A1A1A] p-4 border-t border-gray-700">
+  <div class="fixed bottom-0 left-0 right-0 bg-[#1A1A1A] p-4 border-t border-gray-700">
       <%= form_with url: add_message_workout_plan_path(@workout_plan.slug), method: :post, local: true, class: "flex items-center space-x-3" do |form| %>
         <div class="flex-1 relative">
           <%= form.text_field :request_text, 
-              placeholder: "Type your request", 
-              class: "w-full bg-gray-800 text-white px-4 py-3 rounded-[24px] border border-gray-600 focus:border-blue-500 focus:outline-none text-[14px]" %>
+        placeholder: (remaining_uses && remaining_uses <= 0) ? "Kuota AI minggu ini habis. Reset setiap Senin" : "Type your request", 
+        disabled: (remaining_uses && remaining_uses <= 0),
+        class: "w-full bg-gray-800 text-white px-4 py-3 rounded-[24px] border border-gray-600 focus:border-blue-500 focus:outline-none text-[14px] #{(remaining_uses && remaining_uses <= 0) ? 'opacity-60 cursor-not-allowed' : ''}" %>
         </div>
-        <%= form.submit "Generate", 
-            class: "bg-[#4282EB] text-white px-6 py-3 rounded-[24px] font-medium text-[14px] hover:bg-blue-600 transition-colors" %>
+    <%= form.submit (remaining_uses && remaining_uses <= 0) ? "Kuota Habis" : "Generate", 
+      disabled: (remaining_uses && remaining_uses <= 0),
+      class: "bg-[#4282EB] text-white px-6 py-3 rounded-[24px] font-medium text-[14px] hover:bg-blue-600 transition-colors #{(remaining_uses && remaining_uses <= 0) ? 'opacity-60 cursor-not-allowed' : ''}" %>
       <% end %>
     </div>
   </div>

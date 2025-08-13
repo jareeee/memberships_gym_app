@@ -3,6 +3,7 @@ class WorkoutPlansController < ApplicationController
   before_action :authenticate_user!
   before_action :check_membership_and_profile, except: [:index]
   before_action :find_workout_plan, only: [:show, :add_message]
+  before_action :ensure_ai_limit_available, only: [:create, :add_message]
 
   def index
     @workout_plans = current_user.workout_plans.order(created_at: :desc)
@@ -60,6 +61,9 @@ class WorkoutPlansController < ApplicationController
 
         @workout_plan.add_to_chat_history('user', request_text)
 
+  # Count this as an AI usage
+  current_user.increment_ai_usage!
+
         GenerateWorkoutPlanJob.perform_later(@workout_plan.id, request_text)
 
         redirect_to workout_plan_path(@workout_plan.slug)
@@ -79,6 +83,9 @@ class WorkoutPlansController < ApplicationController
     if request_text.present?
       begin
         @workout_plan.add_to_chat_history('user', request_text)
+
+  # Count this as an AI usage
+  current_user.increment_ai_usage!
 
         new_plan = Ai::WorkoutPlannerService.new(
           user: current_user, 
@@ -140,5 +147,23 @@ class WorkoutPlansController < ApplicationController
   def find_workout_plan
     slug = params[:slug]    
     @workout_plan = current_user.workout_plans.find_by!(slug: slug)
+  end
+
+  def ensure_ai_limit_available
+    # Ensure period is up to date and check remaining
+    current_user.ensure_ai_weekly_period!
+    return if current_user.ai_usage_allowed?
+
+    remaining_date = current_user.monday_for(Date.current + 7) # next Monday
+    message = "🔒 Batas penggunaan AI mingguan Anda telah habis (#{User::WEEKLY_AI_LIMIT}x). Kuota akan direset setiap hari Senin."
+
+    # Determine sensible fallback
+    fallback = if defined?(@workout_plan) && @workout_plan.present?
+                 workout_plan_path(@workout_plan.slug)
+               else
+                 workout_plans_path
+               end
+
+    redirect_back(fallback_location: fallback, alert: message)
   end
 end

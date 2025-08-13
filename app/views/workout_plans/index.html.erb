@@ -12,6 +12,10 @@
 
   <!-- Content -->
   <div class="px-[16px] mt-[20px]">
+    <% remaining_uses = current_user.ai_remaining_uses rescue nil %>
+    <% if remaining_uses.present? %>
+      <div class="mb-4 text-[12px] text-gray-400">Sisa kuota AI minggu ini: <span class="text-white font-medium"><%= remaining_uses %></span> / <%= User::WEEKLY_AI_LIMIT %></div>
+    <% end %>
     <% if @workout_plans.any? %>
       <!-- Workout Plans List -->
       <div class="space-y-4">
@@ -113,7 +117,8 @@
     <% 
       has_membership = current_user.has_active_membership?
       profile_complete = current_user.birthdate.present? && current_user.gender.present? && current_user.height_cm.present? && current_user.weight_kg.present?
-      can_generate = has_membership && profile_complete
+      within_quota = (remaining_uses.nil? || remaining_uses > 0)
+      can_generate = has_membership && profile_complete && within_quota
       
       # Determine tooltip message
       if !has_membership && !profile_complete
@@ -122,6 +127,8 @@
         tooltip_message = "Memerlukan membership aktif"
       elsif !profile_complete
         tooltip_message = "Lengkapi profile terlebih dahulu (tanggal lahir, jenis kelamin, tinggi, berat badan)"
+      elsif !within_quota
+        tooltip_message = "Kuota AI minggu ini habis. Kuota akan direset setiap hari Senin"
       else
         tooltip_message = ""
       end
@@ -134,12 +141,12 @@
         <%= form_with url: workout_plans_path, method: :post, local: true, class: "space-y-4" do |form| %>
           <div>
             <%= form.text_area :request_text, 
-                placeholder: can_generate ? "Describe your workout needs... (e.g., 'Upper body workout at home for 30 minutes')" : "Memerlukan membership dan profile lengkap untuk menggunakan fitur ini", 
+        placeholder: can_generate ? "Describe your workout needs... (e.g., 'Upper body workout at home for 30 minutes')" : tooltip_message.presence || "Tidak dapat menggunakan fitur saat ini",
                 rows: 3,
                 disabled: !can_generate,
                 class: "w-full px-4 py-3 rounded-[12px] border text-[14px] resize-none transition-colors #{can_generate ? 'bg-gray-800 text-white border-gray-600 focus:border-blue-500 focus:outline-none' : 'bg-gray-900 text-gray-500 border-gray-700 cursor-not-allowed'}" %>
           </div>
-          <%= form.submit "Generate Workout Plan", 
+      <%= form.submit within_quota ? "Generate Workout Plan" : "Kuota Habis", 
               disabled: !can_generate,
               class: "w-full py-3 rounded-[12px] font-bold text-[16px] transition-colors #{can_generate ? 'bg-[#4282EB] text-white hover:bg-blue-600 cursor-pointer' : 'bg-gray-700 text-gray-500 cursor-not-allowed'}" %>
         <% end %>
