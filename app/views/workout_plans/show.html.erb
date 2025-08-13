@@ -16,17 +16,13 @@
     <% @workout_plan.chat_history.each do |message| %>
       <% if message['role'] == 'user' %>
         <!-- User Message -->
-        <div class="flex justify-end mb-4">
+        <div class="flex items-end justify-end mb-4">
           <div class="bg-[#4282EB] text-white px-4 py-3 rounded-[18px] rounded-br-[4px] max-w-[280px]">
+            <p class="text-[12px] text-white/80 mb-1"><%= user_display_name(current_user) %></p>
             <p class="text-[14px]"><%= message['content'] %></p>
           </div>
           <div class="ml-3 flex-shrink-0">
-            <div class="w-[32px] h-[32px] bg-gray-300 rounded-full flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-              </svg>
-            </div>
+            <%= avatar_for(current_user, size: 32) %>
           </div>
         </div>
       <% elsif message['role'] == 'assistant' %>
@@ -42,6 +38,7 @@
             </div>
           </div>
           <div class="bg-gray-800 text-white px-4 py-3 rounded-[18px] rounded-bl-[4px] max-w-[280px]">
+            <p class="text-[12px] text-white/80 mb-1">AI Coach</p>
             <p class="text-[14px]"><%= message['content'] %></p>
           </div>
         </div>
