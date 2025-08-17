@@ -10,6 +10,15 @@
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
     <link rel="icon" href="<%= asset_path('logo-gym-app.svg') %>">
+
+    <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="theme-color" content="#0ea5e9">
+
+    <!-- iOS support -->
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="LesgoGym">
   </head>
 
   <body class="<%= controller_name == 'memberships' && action_name == 'paid' ? 'bg-[#12211C]' : 'bg-[rgb(15,23,36)]' %> text-white">
